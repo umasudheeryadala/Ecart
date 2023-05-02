@@ -93,7 +93,7 @@ public class OrderDataResource {
         for (CartItem cartItem : cartItems) {
             OrderData orderData = new OrderData();
             orderData.setOrder(responseEntity.getBody());
-            orderData.setPrice(cartItem.getPrice());
+            orderData.setPrice(cartItem.getPrice() * cartItem.getQuantity());
             orderData.setProductName(cartItem.getProductName());
             orderData.setQuantity(cartItem.getQuantity());
             orderDataService.save(orderData);

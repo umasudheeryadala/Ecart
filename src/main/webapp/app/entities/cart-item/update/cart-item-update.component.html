@@ -38,7 +38,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_price">Total Price</label>
+          <label class="form-label" for="field_price">Each Item Price</label>
           <input
             type="number"
             class="form-control"
@@ -48,6 +48,11 @@
             [readonly]="true"
             formControlName="price"
           />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_total_price">Total Price</label>
+          <input class="form-control" id="form-label" type="number" [readOnly]="true" [value]="cartItem!.price! * cartItem!.quantity!" />
         </div>
 
         <div class="row mb-3">

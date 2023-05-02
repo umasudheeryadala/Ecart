@@ -23,7 +23,6 @@ export class CartItemComponent implements OnInit {
   predicate = 'id';
   ascending = true;
   isSaving!: boolean;
-
   constructor(
     protected cartItemService: CartItemService,
     protected activatedRoute: ActivatedRoute,

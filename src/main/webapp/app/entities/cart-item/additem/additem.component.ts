@@ -51,7 +51,7 @@ export class AdditemComponent implements OnInit {
         id: 0,
         orderItemId: this.orderItemId,
         productName: this.productName,
-        price: this.price * this.quantity,
+        price: this.price,
         quantity: this.quantity,
       };
       console.log(this.cartItem);
