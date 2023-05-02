@@ -10,11 +10,11 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>ID</span></dt>
+        <dt><span>Cart ID</span></dt>
         <dd>
           <span>{{ cartItem.id }}</span>
         </dd>
-        <dt><span>Order Item Id</span></dt>
+        <dt><span>Item Id</span></dt>
         <dd>
           <span>{{ cartItem.orderItemId }}</span>
         </dd>
@@ -22,7 +22,7 @@
         <dd>
           <span>{{ cartItem.productName }}</span>
         </dd>
-        <dt><span>Price</span></dt>
+        <dt><span>Total Price</span></dt>
         <dd>
           <span>{{ cartItem.price }}</span>
         </dd>
@@ -30,8 +30,8 @@
         <dd>
           <span>{{ cartItem.quantity }}</span>
         </dd>
-        <dt><span>User</span></dt>
-        <dd>
+        <dt *jhiHasAnyAuthority="'ROLE_ADMIN'"><span>User</span></dt>
+        <dd *jhiHasAnyAuthority="'ROLE_ADMIN'">
           <span>{{ cartItem.user?.id }}</span>
         </dd>
       </dl>

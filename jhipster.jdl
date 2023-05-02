@@ -34,7 +34,9 @@ relationship ManyToOne {
 
 // Set pagination options
 paginate OrderItem with pagination
-
+paginate Order with pagination
+paginate CartItem with pagination
+paginate OrderData with pagination
 // Use Data Transfer Objects (DTO)
 // dto * with mapstruct
 
@@ -42,5 +44,5 @@ paginate OrderItem with pagination
 service all with serviceImpl
 
 // Set an angular suffix
-// angularSuffix * with mySuffix
+ angularSuffix * with mySuffix
 

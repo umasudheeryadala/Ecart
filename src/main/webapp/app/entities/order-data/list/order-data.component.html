@@ -35,7 +35,7 @@
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
           <th scope="col" jhiSortBy="id">
             <div class="d-flex">
-              <span>Id</span>
+              <span>Data Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -59,7 +59,7 @@
           </th>
           <th scope="col" jhiSortBy="order.id">
             <div class="d-flex">
-              <span>Order</span>
+              <span>Order Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -69,14 +69,14 @@
       <tbody>
         <tr *ngFor="let orderData of orderData; trackBy: trackId" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/order-data', orderData.id, 'view']">{{ orderData.id }}</a>
+            {{ orderData.id }}
           </td>
           <td>{{ orderData.quantity }}</td>
           <td>{{ orderData.productName }}</td>
           <td>{{ orderData.price }}</td>
           <td>
             <div *ngIf="orderData.order">
-              <a [routerLink]="['/order', orderData.order.id, 'view']">{{ orderData.order.id }}</a>
+              {{ orderData.order.id }}
             </div>
           </td>
           <td class="text-end">

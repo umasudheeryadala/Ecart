@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -170,6 +171,18 @@ public class OrderResource {
         log.debug("REST request to get Order : {}", id);
         Optional<Order> order = orderService.findOne(id);
         return ResponseUtil.wrapOrNotFound(order);
+    }
+
+    /**
+     * {@code GET  /orders/user/:user_id} : get the "user_id" order.
+     *
+     * @param id the id of the order to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the order, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/orders/user/{id}")
+    public ResponseEntity<List<Order>> getOrderByUser(@PathVariable Long id) {
+        log.debug("REST request to get Order : {}", id);
+        return new ResponseEntity<>(orderService.getAllOrder(id), HttpStatus.OK);
     }
 
     /**

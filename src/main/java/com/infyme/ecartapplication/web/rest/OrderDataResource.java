@@ -1,13 +1,11 @@
 package com.infyme.ecartapplication.web.rest;
 
-import com.infyme.ecartapplication.domain.Authority;
 import com.infyme.ecartapplication.domain.CartItem;
 import com.infyme.ecartapplication.domain.Order;
 import com.infyme.ecartapplication.domain.OrderData;
 import com.infyme.ecartapplication.domain.OrderItem;
 import com.infyme.ecartapplication.domain.User;
 import com.infyme.ecartapplication.repository.OrderDataRepository;
-import com.infyme.ecartapplication.repository.UserRepository;
 import com.infyme.ecartapplication.service.OrderDataService;
 import com.infyme.ecartapplication.service.OrderService;
 import com.infyme.ecartapplication.web.rest.errors.BadRequestAlertException;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -214,7 +211,16 @@ public class OrderDataResource {
         );
         User user = responseEntity.getBody();
         if (!user.getLogin().equals("admin")) {
-            orders = orderService.getAllOrder(responseEntity.getBody().getId());
+            HttpEntity<Long> jwtEntity1 = new HttpEntity<Long>(user.getId(), headers);
+            ResponseEntity<Order[]> responseEntity1 = restTemplate.exchange(
+                "http://localhost:8080/api//orders/user/" + user.getId(),
+                HttpMethod.GET,
+                jwtEntity,
+                Order[].class
+            );
+            for (Order order : responseEntity1.getBody()) {
+                orders.add(order);
+            }
             return orderDataService.getOrderData(orders);
         } else {
             return orderDataService.findAll();

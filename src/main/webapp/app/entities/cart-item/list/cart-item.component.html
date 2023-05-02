@@ -1,6 +1,6 @@
 <div>
   <h2 id="page-heading" data-cy="CartItemHeading">
-    <span>Cart Items</span>
+    <span><span class="glyphicon glyphicon-shopping-cart"></span>Cart Items</span>
 
     <div class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
@@ -22,15 +22,9 @@
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
-          <th scope="col" jhiSortBy="id">
-            <div class="d-flex">
-              <span>ID</span>
-              <fa-icon class="p-1" icon="sort"></fa-icon>
-            </div>
-          </th>
           <th scope="col" jhiSortBy="orderItemId">
             <div class="d-flex">
-              <span>Order Item Id</span>
+              <span>Item Id</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -42,7 +36,7 @@
           </th>
           <th scope="col" jhiSortBy="price">
             <div class="d-flex">
-              <span>Price</span>
+              <span>Total Price</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
@@ -52,7 +46,7 @@
               <fa-icon class="p-1" icon="sort"></fa-icon>
             </div>
           </th>
-          <th scope="col" jhiSortBy="user.id">
+          <th *jhiHasAnyAuthority="'ROLE_ADMIN'" scope="col" jhiSortBy="user.id">
             <div class="d-flex">
               <span>User</span>
               <fa-icon class="p-1" icon="sort"></fa-icon>
@@ -63,14 +57,11 @@
       </thead>
       <tbody>
         <tr *ngFor="let cartItem of cartItems; trackBy: trackId" data-cy="entityTable">
-          <td>
-            <a [routerLink]="['/cart-item', cartItem.id, 'view']">{{ cartItem.id }}</a>
-          </td>
           <td>{{ cartItem.orderItemId }}</td>
           <td>{{ cartItem.productName }}</td>
           <td>{{ cartItem.price }}</td>
           <td>{{ cartItem.quantity }}</td>
-          <td>
+          <td *jhiHasAnyAuthority="'ROLE_ADMIN'">
             {{ cartItem.user?.id }}
           </td>
           <td class="text-end">
@@ -92,7 +83,7 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline">Edit</span>
+                <span class="d-none d-md-inline">Update</span>
               </button>
 
               <button type="submit" (click)="delete(cartItem)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">

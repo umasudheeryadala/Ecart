@@ -1,18 +1,18 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h2 id="jhi-cart-item-heading" data-cy="CartItemCreateUpdateHeading">Create or edit a Cart Item</h2>
+      <h2 id="jhi-cart-item-heading" data-cy="CartItemCreateUpdateHeading">Update Quantity</h2>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
 
         <div class="row mb-3" *ngIf="editForm.controls.id.value !== null">
-          <label class="form-label" for="field_id">ID</label>
+          <label class="form-label" for="field_id">Item ID</label>
           <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_orderItemId">Order Item Id</label>
+          <label class="form-label" for="field_orderItemId">Cart Item Id</label>
           <input
             type="number"
             class="form-control"
@@ -38,7 +38,7 @@
         </div>
 
         <div class="row mb-3">
-          <label class="form-label" for="field_price">Price</label>
+          <label class="form-label" for="field_price">Total Price</label>
           <input
             type="number"
             class="form-control"
@@ -52,7 +52,15 @@
 
         <div class="row mb-3">
           <label class="form-label" for="field_quantity">Quantity</label>
-          <input type="number" class="form-control" name="quantity" id="field_quantity" data-cy="quantity" formControlName="quantity" />
+          <input
+            type="number"
+            min="0"
+            class="form-control"
+            name="quantity"
+            id="field_quantity"
+            data-cy="quantity"
+            formControlName="quantity"
+          />
         </div>
 
         <!-- <div class="row mb-3">
