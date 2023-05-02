@@ -1,6 +1,7 @@
 package com.infyme.ecartapplication.web.rest;
 
 import com.infyme.ecartapplication.domain.CartItem;
+import com.infyme.ecartapplication.domain.OrderItem;
 import com.infyme.ecartapplication.domain.User;
 import com.infyme.ecartapplication.repository.CartItemRepository;
 import com.infyme.ecartapplication.service.CartItemService;
@@ -77,6 +78,8 @@ public class CartItemResource {
         } else {
             CartItem cartItem2 = optional.get();
             cartItem2.setQuantity(cartItem.getQuantity() + cartItem2.getQuantity());
+            Long price = cartItem.getPrice() / cartItem.getQuantity();
+            cartItem2.price(cartItem2.getQuantity() * price);
             result = cartItemService.update(cartItem2);
         }
         return ResponseEntity
@@ -98,7 +101,8 @@ public class CartItemResource {
     @PutMapping("/cart-items/{id}")
     public ResponseEntity<CartItem> updateCartItem(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody CartItem cartItem
+        @RequestBody CartItem cartItem,
+        @RequestHeader(name = "Authorization") String token
     ) throws URISyntaxException {
         log.debug("REST request to update CartItem : {}, {}", id, cartItem);
         if (cartItem.getId() == null) {
@@ -111,7 +115,17 @@ public class CartItemResource {
         if (!cartItemRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<String> jwtEntity = new HttpEntity<String>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<OrderItem> responseEntity = restTemplate.exchange(
+            "http://localhost:8080/api/order-items/" + cartItem.getOrderItemId(),
+            HttpMethod.GET,
+            jwtEntity,
+            OrderItem.class
+        );
+        cartItem.setPrice(responseEntity.getBody().getPrice() * cartItem.getQuantity());
         CartItem result = cartItemService.update(cartItem);
         return ResponseEntity
             .ok()

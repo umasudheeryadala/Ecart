@@ -35,6 +35,12 @@
       <!-- <button jhiHasAnyAuthority="'ROLE_ADMIN'" type="button" [routerLink]="['/order-item', orderItem.id, 'edit']" class="btn btn-primary">
         <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
       </button> -->
+      <jhi-additem
+        [availableQuantity]="orderItem.quantity"
+        [productName]="orderItem.productName"
+        [orderItemId]="orderItem.id"
+        [price]="orderItem.price"
+      ></jhi-additem>
     </div>
   </div>
 </div>
