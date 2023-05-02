@@ -1,0 +1,46 @@
+
+entity Order {
+	id Long 
+    orderDate LocalDate required
+}
+
+entity OrderItem {
+	id Long
+    productName String required pattern(/([A-Z][a-z]+)( [A-Z][a-z]+)*/)
+    quantity Long required
+    price Long required
+}
+entity OrderData{
+	id Long 
+    quantity Long required
+    productName String required pattern(/([A-Z][a-z]+)( [A-Z][a-z]+)*/)
+    price Long required
+}
+
+
+entity CartItem{
+   orderItemId Long
+   ProductName String
+   Price Long
+   Quantity Long
+}
+relationship OneToMany {
+    Order{orderData} to OrderData
+}
+relationship ManyToOne {
+	Order{user} to User
+    CartItem{user} to User
+}
+
+// Set pagination options
+paginate OrderItem with pagination
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
+
