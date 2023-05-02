@@ -40,6 +40,13 @@ export class AccountService {
     if (!Array.isArray(authorities)) {
       authorities = [authorities];
     }
+    if (this.userIdentity.authorities.length > 1) {
+      if (authorities.includes('ROLE_USER')) {
+        return false;
+      } else {
+        return true;
+      }
+    }
     return this.userIdentity.authorities.some((authority: string) => authorities.includes(authority));
   }
 

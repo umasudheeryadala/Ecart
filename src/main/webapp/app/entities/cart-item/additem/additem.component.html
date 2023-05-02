@@ -1,0 +1,22 @@
+<div class="btn-group">
+  <div class="input-group w-auto justify-content-end align-items-center">
+    <input
+      type="button"
+      value="-"
+      class="button-minus border rounded-circle icon-shape icon-sm mx-1 btn btn-danger btn-number"
+      (click)="decrementQty()"
+    />
+    <input class="quantity-field border-0 text-center w-10" style="width: 30px" [value]="quantity" [readonly]="true" />
+    <input
+      type="button"
+      value="+"
+      class="button-plus border rounded-circle icon-shape icon-sm btn btn-success btn-number"
+      (click)="incrementQty()"
+    />
+  </div>
+  &nbsp;&nbsp;
+  <button type="submit" (click)="submit()" class="btn btn-primary btn-sm" data-cy="entityDetailsButton">
+    <span class="d-none d-md-inline">Submit</span>
+  </button>
+  &nbsp;&nbsp;
+</div>

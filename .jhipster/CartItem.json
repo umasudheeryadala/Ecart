@@ -1,0 +1,38 @@
+{
+  "applications": "*",
+  "changelogDate": "20230501062834",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "cart_item",
+  "fields": [
+    {
+      "fieldName": "orderItemId",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "productName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "quantity",
+      "fieldType": "Long"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "CartItem",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "relationshipName": "user",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}
