@@ -3,8 +3,6 @@ package com.infyme.ecartapplication.web.rest;
 import com.infyme.ecartapplication.domain.CartItem;
 import com.infyme.ecartapplication.domain.User;
 import com.infyme.ecartapplication.repository.CartItemRepository;
-import com.infyme.ecartapplication.repository.UserRepository;
-import com.infyme.ecartapplication.security.SecurityUtils;
 import com.infyme.ecartapplication.service.CartItemService;
 import com.infyme.ecartapplication.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -15,8 +13,12 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -38,12 +40,9 @@ public class CartItemResource {
 
     private final CartItemRepository cartItemRepository;
 
-    private final UserRepository userRepository;
-
-    public CartItemResource(CartItemService cartItemService, CartItemRepository cartItemRepository, UserRepository userRepository) {
+    public CartItemResource(CartItemService cartItemService, CartItemRepository cartItemRepository) {
         this.cartItemService = cartItemService;
         this.cartItemRepository = cartItemRepository;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -54,16 +53,25 @@ public class CartItemResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/cart-items")
-    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem) throws URISyntaxException {
+    public ResponseEntity<CartItem> createCartItem(@RequestBody CartItem cartItem, @RequestHeader(name = "Authorization") String token)
+        throws URISyntaxException {
         log.debug("REST request to save CartItem : {}", cartItem);
         if (cartItem.getId() != null && cartItem.getId() != 0) {
             throw new BadRequestAlertException("A new cartItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CartItem result;
-        String userLogin = SecurityUtils.getCurrentUserLogin().get();
-        User user = userRepository.findOneByLogin(userLogin).get();
-        cartItem.setUser(user);
-        Optional<CartItem> optional = cartItemService.getCartItemByOrderId(cartItem.getOrderItemId(), user.getId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<String> jwtEntity = new HttpEntity<String>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> responseEntity = restTemplate.exchange(
+            "http://localhost:8080/api/userdetails",
+            HttpMethod.GET,
+            jwtEntity,
+            User.class
+        );
+        cartItem.setUser(responseEntity.getBody());
+        Optional<CartItem> optional = cartItemService.getCartItemByOrderId(cartItem.getOrderItemId(), responseEntity.getBody().getId());
         if (optional.isEmpty()) {
             result = cartItemService.save(cartItem);
         } else {
@@ -153,11 +161,19 @@ public class CartItemResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of cartItems in body.
      */
     @GetMapping("/cart-items")
-    public List<CartItem> getAllCartItems() {
+    public List<CartItem> getAllCartItems(@RequestHeader(name = "Authorization") String token) {
         log.debug("REST request to get all CartItems");
-        String userLogin = SecurityUtils.getCurrentUserLogin().get();
-        User user = userRepository.findOneByLogin(userLogin).get();
-        return cartItemService.getCartItems(user.getId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<String> jwtEntity = new HttpEntity<String>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> responseEntity = restTemplate.exchange(
+            "http://localhost:8080/api/userdetails",
+            HttpMethod.GET,
+            jwtEntity,
+            User.class
+        );
+        return cartItemService.getCartItems(responseEntity.getBody().getId());
     }
 
     /**

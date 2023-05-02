@@ -1,7 +1,6 @@
 package com.infyme.ecartapplication.service.impl;
 
 import com.infyme.ecartapplication.domain.CartItem;
-import com.infyme.ecartapplication.domain.User;
 import com.infyme.ecartapplication.repository.CartItemRepository;
 import com.infyme.ecartapplication.service.CartItemService;
 import java.util.List;

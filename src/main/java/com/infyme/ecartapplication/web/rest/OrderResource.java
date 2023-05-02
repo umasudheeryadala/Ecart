@@ -3,8 +3,6 @@ package com.infyme.ecartapplication.web.rest;
 import com.infyme.ecartapplication.domain.Order;
 import com.infyme.ecartapplication.domain.User;
 import com.infyme.ecartapplication.repository.OrderRepository;
-import com.infyme.ecartapplication.repository.UserRepository;
-import com.infyme.ecartapplication.security.SecurityUtils;
 import com.infyme.ecartapplication.service.OrderService;
 import com.infyme.ecartapplication.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -17,8 +15,12 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -40,12 +42,9 @@ public class OrderResource {
 
     private final OrderRepository orderRepository;
 
-    private final UserRepository userRepository;
-
-    public OrderResource(OrderService orderService, OrderRepository orderRepository, UserRepository userRepository) {
+    public OrderResource(OrderService orderService, OrderRepository orderRepository) {
         this.orderService = orderService;
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
     }
 
     /**
@@ -142,11 +141,18 @@ public class OrderResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of orders in body.
      */
     @GetMapping("/orders")
-    public List<Order> getAllOrders() {
-        log.debug("REST request to get all Orders");
-        String userLogin = SecurityUtils.getCurrentUserLogin().get();
-        User user = userRepository.findOneByLogin(userLogin).get();
-        return orderService.getAllOrder(user.getId());
+    public List<Order> getAllOrders(@RequestHeader(name = "Authorization") String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<String> jwtEntity = new HttpEntity<String>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> responseEntity = restTemplate.exchange(
+            "http://localhost:8080/api/userdetails",
+            HttpMethod.GET,
+            jwtEntity,
+            User.class
+        );
+        return orderService.getAllOrder(responseEntity.getBody().getId());
     }
 
     /**

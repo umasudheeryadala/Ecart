@@ -322,4 +322,13 @@ public class UserService {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
         }
     }
+
+    /**
+     * Gets a list of all the authorities.
+     * @return a list of all the authorities.
+     */
+    public User getUser() {
+        String userLogin = SecurityUtils.getCurrentUserLogin().get();
+        return userRepository.findOneByLogin(userLogin).get();
+    }
 }

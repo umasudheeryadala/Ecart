@@ -123,8 +123,7 @@ export class CartItemComponent implements OnInit {
 
   populate() {
     this.isSaving = true;
-    //this.subscribeToSaveResponse(this.orderDataSevice.populate(this.cartItems));
-    this.router.navigate(['/cart-data']);
+    this.subscribeToSaveResponse(this.orderDataSevice.create(this.cartItems));
   }
   protected subscribeToSaveResponse(result: Observable<HttpResponse<String>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({

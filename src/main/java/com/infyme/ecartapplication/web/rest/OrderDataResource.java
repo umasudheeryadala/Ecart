@@ -1,5 +1,6 @@
 package com.infyme.ecartapplication.web.rest;
 
+import com.infyme.ecartapplication.domain.CartItem;
 import com.infyme.ecartapplication.domain.Order;
 import com.infyme.ecartapplication.domain.OrderData;
 import com.infyme.ecartapplication.domain.User;
@@ -11,6 +12,7 @@ import com.infyme.ecartapplication.service.OrderService;
 import com.infyme.ecartapplication.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -20,8 +22,13 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -67,16 +74,47 @@ public class OrderDataResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/order-data")
-    public ResponseEntity<OrderData> createOrderData(@Valid @RequestBody OrderData orderData) throws URISyntaxException {
-        log.debug("REST request to save OrderData : {}", orderData);
-        if (orderData.getId() != null) {
-            throw new BadRequestAlertException("A new orderData cannot already have an ID", ENTITY_NAME, "idexists");
+    public ResponseEntity<String> createOrderData(
+        @Valid @RequestBody CartItem[] cartItems,
+        @RequestHeader(name = "Authorization") String token
+    ) throws URISyntaxException {
+        log.debug("REST request to save OrderData : {}", cartItems);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpHeaders headers1 = new HttpHeaders();
+        headers1.set("Authorization", token);
+        HttpEntity<String> jwtEntity2 = new HttpEntity<String>(headers1);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> responseEntity2 = restTemplate.exchange(
+            "http://localhost:8080/api/userdetails",
+            HttpMethod.GET,
+            jwtEntity2,
+            User.class
+        );
+        Order order = new Order();
+        order.setOrderDate(LocalDate.now());
+        order.setUser(responseEntity2.getBody());
+        HttpEntity<Order> jwtEntity = new HttpEntity<Order>(order, headers);
+        ResponseEntity<Order> responseEntity = restTemplate.exchange(
+            "http://localhost:8080/api/orders",
+            HttpMethod.POST,
+            jwtEntity,
+            Order.class
+        );
+
+        for (CartItem cartItem : cartItems) {
+            OrderData orderData = new OrderData();
+            orderData.setOrder(responseEntity.getBody());
+            orderData.setPrice(cartItem.getPrice());
+            orderData.setProductName(cartItem.getProductName());
+            orderData.setQuantity(cartItem.getQuantity());
+            OrderData result = orderDataService.save(orderData);
+            HttpEntity<CartItem> jwtEntity1 = new HttpEntity<CartItem>(cartItem, headers);
+            Long id = cartItem.getId();
+            restTemplate.exchange("http://localhost:8080/api/cart-items/" + id, HttpMethod.DELETE, jwtEntity1, void.class);
         }
-        OrderData result = orderDataService.save(orderData);
-        return ResponseEntity
-            .created(new URI("/api/order-data/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        String value = "success";
+        return new ResponseEntity<>(value, HttpStatus.OK);
     }
 
     /**
@@ -155,12 +193,20 @@ public class OrderDataResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of orderData in body.
      */
     @GetMapping("/order-data")
-    public List<OrderData> getAllOrderData() {
+    public List<OrderData> getAllOrderData(@RequestHeader(name = "Authorization") String token) {
         log.debug("REST request to get all OrderData");
         List<Order> orders = new ArrayList<>();
-        String userLogin = SecurityUtils.getCurrentUserLogin().get();
-        User user = userRepository.findOneByLogin(userLogin).get();
-        orders = orderService.getAllOrder(user.getId());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", token);
+        HttpEntity<String> jwtEntity = new HttpEntity<String>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<User> responseEntity = restTemplate.exchange(
+            "http://localhost:8080/api/userdetails",
+            HttpMethod.GET,
+            jwtEntity,
+            User.class
+        );
+        orders = orderService.getAllOrder(responseEntity.getBody().getId());
         return orderDataService.getOrderData(orders);
     }
 
