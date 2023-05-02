@@ -1,22 +1,23 @@
 package com.infyme.ecartapplication.web.rest;
 
+import com.infyme.ecartapplication.domain.Authority;
 import com.infyme.ecartapplication.domain.CartItem;
 import com.infyme.ecartapplication.domain.Order;
 import com.infyme.ecartapplication.domain.OrderData;
+import com.infyme.ecartapplication.domain.OrderItem;
 import com.infyme.ecartapplication.domain.User;
 import com.infyme.ecartapplication.repository.OrderDataRepository;
 import com.infyme.ecartapplication.repository.UserRepository;
-import com.infyme.ecartapplication.security.SecurityUtils;
 import com.infyme.ecartapplication.service.OrderDataService;
 import com.infyme.ecartapplication.service.OrderService;
 import com.infyme.ecartapplication.web.rest.errors.BadRequestAlertException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
@@ -50,19 +51,11 @@ public class OrderDataResource {
 
     private final OrderDataRepository orderDataRepository;
 
-    private final UserRepository userRepository;
-
     private final OrderService orderService;
 
-    public OrderDataResource(
-        OrderDataService orderDataService,
-        OrderDataRepository orderDataRepository,
-        UserRepository userRepository,
-        OrderService orderService
-    ) {
+    public OrderDataResource(OrderDataService orderDataService, OrderDataRepository orderDataRepository, OrderService orderService) {
         this.orderDataService = orderDataService;
         this.orderDataRepository = orderDataRepository;
-        this.userRepository = userRepository;
         this.orderService = orderService;
     }
 
@@ -81,9 +74,7 @@ public class OrderDataResource {
         log.debug("REST request to save OrderData : {}", cartItems);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
-        HttpHeaders headers1 = new HttpHeaders();
-        headers1.set("Authorization", token);
-        HttpEntity<String> jwtEntity2 = new HttpEntity<String>(headers1);
+        HttpEntity<String> jwtEntity2 = new HttpEntity<String>(headers);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<User> responseEntity2 = restTemplate.exchange(
             "http://localhost:8080/api/userdetails",
@@ -108,10 +99,25 @@ public class OrderDataResource {
             orderData.setPrice(cartItem.getPrice());
             orderData.setProductName(cartItem.getProductName());
             orderData.setQuantity(cartItem.getQuantity());
-            OrderData result = orderDataService.save(orderData);
+            orderDataService.save(orderData);
             HttpEntity<CartItem> jwtEntity1 = new HttpEntity<CartItem>(cartItem, headers);
             Long id = cartItem.getId();
             restTemplate.exchange("http://localhost:8080/api/cart-items/" + id, HttpMethod.DELETE, jwtEntity1, void.class);
+            ResponseEntity<OrderItem> response = restTemplate.exchange(
+                "http://localhost:8080/api/order-items/" + cartItem.getOrderItemId(),
+                HttpMethod.GET,
+                jwtEntity2,
+                OrderItem.class
+            );
+            OrderItem orderItem = response.getBody();
+            orderItem.setQuantity(orderItem.getQuantity() - cartItem.getQuantity());
+            HttpEntity<OrderItem> jwtEntity3 = new HttpEntity<OrderItem>(orderItem, headers);
+            restTemplate.exchange(
+                "http://localhost:8080/api/order-items/" + orderItem.getId(),
+                HttpMethod.PUT,
+                jwtEntity3,
+                OrderItem.class
+            );
         }
         String value = "success";
         return new ResponseEntity<>(value, HttpStatus.OK);
@@ -206,8 +212,13 @@ public class OrderDataResource {
             jwtEntity,
             User.class
         );
-        orders = orderService.getAllOrder(responseEntity.getBody().getId());
-        return orderDataService.getOrderData(orders);
+        User user = responseEntity.getBody();
+        if (!user.getLogin().equals("admin")) {
+            orders = orderService.getAllOrder(responseEntity.getBody().getId());
+            return orderDataService.getOrderData(orders);
+        } else {
+            return orderDataService.findAll();
+        }
     }
 
     /**

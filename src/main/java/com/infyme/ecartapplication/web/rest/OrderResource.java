@@ -152,7 +152,11 @@ public class OrderResource {
             jwtEntity,
             User.class
         );
-        return orderService.getAllOrder(responseEntity.getBody().getId());
+        User user = responseEntity.getBody();
+        if (!user.getLogin().equals("admin")) {
+            return orderService.getAllOrder(responseEntity.getBody().getId());
+        }
+        return orderService.findAll();
     }
 
     /**
