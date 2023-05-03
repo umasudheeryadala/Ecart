@@ -18,7 +18,7 @@
     <span>No Cart Items found</span>
   </div>
 
-  <div class="table-responsive table-entities" id="entities" *ngIf="cartItems && cartItems.length > 0">
+  <div class="table-responsive table-entities" id="entities" *ngIf="cartItems?.length != 0">
     <table class="table table-striped" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
@@ -97,7 +97,7 @@
     </table>
   </div>
   <div class="d-flex justify-content-end">
-    <button class="btn btn-primary me-4" *ngIf="cartItems.length > 0" (click)="populate()">
+    <button class="btn btn-primary me-4" *ngIf="cartItems?.length != 0" (click)="populate()">
       <span>CheckOut</span>
     </button>
   </div>

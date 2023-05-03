@@ -1,0 +1,62 @@
+<div>
+  <h2 id="page-heading" data-cy="OrderDataHeading">
+    <span>Order Data Items</span>
+  </h2>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="orderData?.length === 0">
+    <span>No Order Data found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="orderData && orderData.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Data Id</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Quantity</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Product Name</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Price</span>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let orderData of orderData" data-cy="entityTable">
+          <td>
+            {{ orderData.id }}
+          </td>
+          <td>{{ orderData.quantity }}</td>
+          <td>{{ orderData.productName }}</td>
+          <td>{{ orderData.price }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/order-data', orderData.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

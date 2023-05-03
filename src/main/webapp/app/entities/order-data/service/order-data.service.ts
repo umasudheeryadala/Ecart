@@ -40,6 +40,10 @@ export class OrderDataService {
     return this.http.get<IOrderData>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
+  findByOrderId(id: number): Observable<EntityArrayResponseType> {
+    return this.http.get<IOrderData[]>(`${this.resourceUrl + '/user'}/${id}`, { observe: 'response' });
+  }
+
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<IOrderData[]>(this.resourceUrl, { params: options, observe: 'response' });

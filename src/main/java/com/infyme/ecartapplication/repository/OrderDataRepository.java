@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderDataRepository extends JpaRepository<OrderData, Long> {
     @Query("select orderdata from OrderData orderdata where orderdata.order.id=?1")
-    List<OrderData> findByUserId(Long Id);
+    List<OrderData> findByOrderId(Long Id);
 }

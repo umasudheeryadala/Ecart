@@ -240,6 +240,12 @@ public class OrderDataResource {
         return ResponseUtil.wrapOrNotFound(orderData);
     }
 
+    @GetMapping("/order-data/user/{id}")
+    public List<OrderData> getOrderDataByOrderId(@PathVariable Long id) {
+        log.debug("REST request to get OrderData : {}", id);
+        return orderDataService.findByOrderId(id);
+    }
+
     /**
      * {@code DELETE  /order-data/:id} : delete the "id" orderData.
      *

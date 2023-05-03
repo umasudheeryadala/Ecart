@@ -61,4 +61,13 @@ public interface OrderDataService {
      * @param orders the list of the orders that user have.
      */
     public List<OrderData> getOrderData(List<Order> orders);
+
+    /**
+     * Get the "order id" orderData .
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+
+    List<OrderData> findByOrderId(Long orderId);
 }

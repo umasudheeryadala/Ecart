@@ -85,9 +85,15 @@ public class OrderDataServiceImpl implements OrderDataService {
     public List<OrderData> getOrderData(List<Order> orders) {
         List<OrderData> orderData = new ArrayList<>();
         for (Order order : orders) {
-            List<OrderData> orderData2 = orderDataRepository.findByUserId(order.getId());
+            List<OrderData> orderData2 = orderDataRepository.findByOrderId(order.getId());
             orderData.addAll(orderData2);
         }
+        return orderData;
+    }
+
+    @Override
+    public List<OrderData> findByOrderId(Long orderId) {
+        List<OrderData> orderData = orderDataRepository.findByOrderId(orderId);
         return orderData;
     }
 }
