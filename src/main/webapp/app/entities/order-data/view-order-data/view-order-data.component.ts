@@ -2,10 +2,10 @@ import { Component, Input, OnInit } from '@angular/core';
 import { IOrderData } from '../order-data.model';
 import { EntityArrayResponseType, OrderDataService } from '../service/order-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SortService } from '../../../../../../../Ecart/src/main/webapp/app/shared/sort/sort.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ASC, DESC } from '../../../../../../../Ecart/src/main/webapp/app/config/navigation.constants';
 import { Observable } from 'rxjs';
+import { ASC, DESC } from 'app/config/navigation.constants';
+import { SortService } from 'app/shared/sort/sort.service';
 
 @Component({
   selector: 'jhi-view-order-data',
