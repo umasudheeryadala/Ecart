@@ -36,6 +36,7 @@
         <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
       </button> -->
       <jhi-additem
+        *jhiHasAnyAuthority="'ROLE_USER'"
         [availableQuantity]="orderItem.quantity"
         [productName]="orderItem.productName"
         [orderItemId]="orderItem.id"
