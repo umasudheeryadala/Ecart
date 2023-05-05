@@ -23,6 +23,7 @@ describe('OrderItem Form Service', () => {
             productName: expect.any(Object),
             quantity: expect.any(Object),
             price: expect.any(Object),
+            orderCategory: expect.any(Object),
           })
         );
       });
@@ -36,6 +37,7 @@ describe('OrderItem Form Service', () => {
             productName: expect.any(Object),
             quantity: expect.any(Object),
             price: expect.any(Object),
+            orderCategory: expect.any(Object),
           })
         );
       });

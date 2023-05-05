@@ -5,19 +5,19 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 
-import { OrderItemService } from '../service/order-item.service';
+import { OrderCategoryService } from '../service/order-category.service';
 
-import { OrderItemComponent } from './order-item.component';
+import { OrderCategoryComponent } from './order-category.component';
 
-describe('OrderItem Management Component', () => {
-  let comp: OrderItemComponent;
-  let fixture: ComponentFixture<OrderItemComponent>;
-  let service: OrderItemService;
+describe('OrderCategory Management Component', () => {
+  let comp: OrderCategoryComponent;
+  let fixture: ComponentFixture<OrderCategoryComponent>;
+  let service: OrderCategoryService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([{ path: 'order-item', component: OrderItemComponent }]), HttpClientTestingModule],
-      declarations: [OrderItemComponent],
+      imports: [RouterTestingModule.withRoutes([{ path: 'order-category', component: OrderCategoryComponent }]), HttpClientTestingModule],
+      declarations: [OrderCategoryComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -37,12 +37,12 @@ describe('OrderItem Management Component', () => {
         },
       ],
     })
-      .overrideTemplate(OrderItemComponent, '')
+      .overrideTemplate(OrderCategoryComponent, '')
       .compileComponents();
 
-    fixture = TestBed.createComponent(OrderItemComponent);
+    fixture = TestBed.createComponent(OrderCategoryComponent);
     comp = fixture.componentInstance;
-    service = TestBed.inject(OrderItemService);
+    service = TestBed.inject(OrderCategoryService);
 
     const headers = new HttpHeaders();
     jest.spyOn(service, 'query').mockReturnValue(
@@ -61,15 +61,15 @@ describe('OrderItem Management Component', () => {
 
     // THEN
     expect(service.query).toHaveBeenCalled();
-    expect(comp.orderItems?.[0]).toEqual(expect.objectContaining({ id: 123 }));
+    expect(comp.orderCategories?.[0]).toEqual(expect.objectContaining({ id: 123 }));
   });
 
   describe('trackId', () => {
-    it('Should forward to orderItemService', () => {
+    it('Should forward to orderCategoryService', () => {
       const entity = { id: 123 };
-      jest.spyOn(service, 'getOrderItemIdentifier');
+      jest.spyOn(service, 'getOrderCategoryIdentifier');
       const id = comp.trackId(0, entity);
-      expect(service.getOrderItemIdentifier).toHaveBeenCalledWith(entity);
+      expect(service.getOrderCategoryIdentifier).toHaveBeenCalledWith(entity);
       expect(id).toBe(entity.id);
     });
   });

@@ -29,8 +29,15 @@
   "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "name": "OrderItem",
-  "pagination": "pagination",
+  "pagination": "no",
   "readOnly": false,
-  "relationships": [],
-  "service": "serviceImpl"
+  "relationships": [
+    {
+      "otherEntityName": "orderCategory",
+      "otherEntityRelationshipName": "orderItem",
+      "relationshipName": "orderCategory",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "no"
 }

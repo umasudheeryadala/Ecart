@@ -10,7 +10,7 @@
       <jhi-alert></jhi-alert>
 
       <dl class="row-md jh-entity-details">
-        <dt><span>Item Id</span></dt>
+        <dt><span>Id</span></dt>
         <dd>
           <span>{{ orderItem.id }}</span>
         </dd>
@@ -26,22 +26,21 @@
         <dd>
           <span>{{ orderItem.price }}</span>
         </dd>
+        <dt><span>Order Category</span></dt>
+        <dd>
+          <div *ngIf="orderItem.orderCategory">
+            <a [routerLink]="['/order-category', orderItem.orderCategory.id, 'view']">{{ orderItem.orderCategory.id }}</a>
+          </div>
+        </dd>
       </dl>
 
       <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
         <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
       </button>
 
-      <!-- <button jhiHasAnyAuthority="'ROLE_ADMIN'" type="button" [routerLink]="['/order-item', orderItem.id, 'edit']" class="btn btn-primary">
+      <button type="button" [routerLink]="['/order-item', orderItem.id, 'edit']" class="btn btn-primary">
         <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
-      </button> -->
-      <jhi-additem
-        *jhiHasAnyAuthority="'ROLE_USER'"
-        [availableQuantity]="orderItem.quantity"
-        [productName]="orderItem.productName"
-        [orderItemId]="orderItem.id"
-        [price]="orderItem.price"
-      ></jhi-additem>
+      </button>
     </div>
   </div>
 </div>

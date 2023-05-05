@@ -1,0 +1,98 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-order-category-heading" data-cy="OrderCategoryCreateUpdateHeading">Create or edit a Order Category</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" *ngIf="editForm.controls.id.value !== null">
+          <label class="form-label" for="field_id">ID</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_categoryName">Category Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="categoryName"
+            id="field_categoryName"
+            data-cy="categoryName"
+            formControlName="categoryName"
+          />
+          <div
+            *ngIf="editForm.get('categoryName')!.invalid && (editForm.get('categoryName')!.dirty || editForm.get('categoryName')!.touched)"
+          >
+            <small class="form-text text-danger" *ngIf="editForm.get('categoryName')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('categoryName')?.errors?.pattern">
+              This field should follow pattern for Category Name.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_categoryImage">Category Image</label>
+          <div>
+            <img
+              [src]="'data:' + editForm.get('categoryImageContentType')!.value + ';base64,' + editForm.get('categoryImage')!.value"
+              style="max-height: 100px"
+              *ngIf="editForm.get('categoryImage')!.value"
+              alt="orderCategory image"
+            />
+            <div *ngIf="editForm.get('categoryImage')!.value" class="form-text text-danger clearfix">
+              <span class="pull-start"
+                >{{ editForm.get('categoryImageContentType')!.value }}, {{ byteSize(editForm.get('categoryImage')!.value!) }}</span
+              >
+              <button
+                type="button"
+                (click)="clearInputImage('categoryImage', 'categoryImageContentType', 'file_categoryImage')"
+                class="btn btn-secondary btn-xs pull-end"
+              >
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+            <input
+              type="file"
+              id="file_categoryImage"
+              data-cy="categoryImage"
+              (change)="setFileData($event, 'categoryImage', true)"
+              accept="image/*"
+            />
+          </div>
+          <input
+            type="hidden"
+            class="form-control"
+            name="categoryImage"
+            id="field_categoryImage"
+            data-cy="categoryImage"
+            formControlName="categoryImage"
+          />
+          <input
+            type="hidden"
+            class="form-control"
+            name="categoryImageContentType"
+            id="field_categoryImageContentType"
+            formControlName="categoryImageContentType"
+          />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<div>
+  <h2 id="page-heading" data-cy="OrderCategoryHeading">
+    <span>Order Categories</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-order-category"
+        [routerLink]="['/order-category/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span> Create a new Order Category </span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <div class="alert alert-warning" id="no-result" *ngIf="orderCategories?.length === 0">
+    <span>No Order Categories found</span>
+  </div>
+
+  <div class="table-responsive table-entities" id="entities" *ngIf="orderCategories && orderCategories.length > 0">
+    <table class="table table-striped" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+          <th scope="col" jhiSortBy="id">
+            <div class="d-flex">
+              <span>ID</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="categoryName">
+            <div class="d-flex">
+              <span>Category Name</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col" jhiSortBy="categoryImage">
+            <div class="d-flex">
+              <span>Category Image</span>
+              <fa-icon class="p-1" icon="sort"></fa-icon>
+            </div>
+          </th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let orderCategory of orderCategories; trackBy: trackId" data-cy="entityTable">
+          <td>
+            <a [routerLink]="['/order-category', orderCategory.id, 'view']">{{ orderCategory.id }}</a>
+          </td>
+          <td>{{ orderCategory.categoryName }}</td>
+          <td>
+            <a *ngIf="orderCategory.categoryImage" (click)="openFile(orderCategory.categoryImage, orderCategory.categoryImageContentType)">
+              <img
+                [src]="'data:' + orderCategory.categoryImageContentType + ';base64,' + orderCategory.categoryImage"
+                style="max-height: 30px"
+                alt="orderCategory image"
+              />
+            </a>
+            <span *ngIf="orderCategory.categoryImage"
+              >{{ orderCategory.categoryImageContentType }}, {{ byteSize(orderCategory.categoryImage) }}</span
+            >
+          </td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button
+                type="submit"
+                [routerLink]="['/order-category', orderCategory.id, 'view']"
+                class="btn btn-info btn-sm"
+                data-cy="entityDetailsButton"
+              >
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/order-category', orderCategory.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+              </button>
+
+              <button type="submit" (click)="delete(orderCategory)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+                <span class="d-none d-md-inline">Delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,5 +1,6 @@
 package com.infyme.ecartapplication.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -34,6 +35,10 @@ public class OrderItem implements Serializable {
     @NotNull
     @Column(name = "price", nullable = false)
     private Long price;
+
+    @ManyToOne
+    @JsonIgnoreProperties(value = { "orderItems" }, allowSetters = true)
+    private OrderCategory orderCategory;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -87,6 +92,19 @@ public class OrderItem implements Serializable {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public OrderCategory getOrderCategory() {
+        return this.orderCategory;
+    }
+
+    public void setOrderCategory(OrderCategory orderCategory) {
+        this.orderCategory = orderCategory;
+    }
+
+    public OrderItem orderCategory(OrderCategory orderCategory) {
+        this.setOrderCategory(orderCategory);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

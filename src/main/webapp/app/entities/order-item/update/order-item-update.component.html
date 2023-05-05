@@ -48,6 +48,23 @@
             <small class="form-text text-danger" [hidden]="!editForm.get('price')?.errors?.number"> This field should be a number. </small>
           </div>
         </div>
+
+        <div class="row mb-3">
+          <label class="form-label" for="field_orderCategory">Order Category</label>
+          <select
+            class="form-control"
+            id="field_orderCategory"
+            data-cy="orderCategory"
+            name="orderCategory"
+            formControlName="orderCategory"
+            [compareWith]="compareOrderCategory"
+          >
+            <option [ngValue]="null"></option>
+            <option [ngValue]="orderCategoryOption" *ngFor="let orderCategoryOption of orderCategoriesSharedCollection">
+              {{ orderCategoryOption.id }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div>

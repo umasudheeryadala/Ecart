@@ -53,6 +53,8 @@ public class CacheConfiguration {
             createCache(cm, com.infyme.ecartapplication.domain.OrderItem.class.getName());
             createCache(cm, com.infyme.ecartapplication.domain.OrderData.class.getName());
             createCache(cm, com.infyme.ecartapplication.domain.CartItem.class.getName());
+            createCache(cm, com.infyme.ecartapplication.domain.OrderCategory.class.getName());
+            createCache(cm, com.infyme.ecartapplication.domain.OrderCategory.class.getName() + ".orderItems");
             // jhipster-needle-ehcache-add-entry
         };
     }

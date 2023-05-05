@@ -1,0 +1,34 @@
+{
+  "applications": "*",
+  "changelogDate": "20230504195600",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "order_category",
+  "fields": [
+    {
+      "fieldName": "categoryName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "pattern"],
+      "fieldValidateRulesPattern": "([A-Z][a-z]+)( [A-Z][a-z]+)*"
+    },
+    {
+      "fieldName": "categoryImage",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "image"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "OrderCategory",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "orderItem",
+      "otherEntityRelationshipName": "orderCategory",
+      "relationshipName": "orderItem",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "service": "no"
+}

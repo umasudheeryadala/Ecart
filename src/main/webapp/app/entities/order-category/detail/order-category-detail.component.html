@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="orderCategory">
+      <h2 data-cy="orderCategoryDetailsHeading"><span>Order Category</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span>ID</span></dt>
+        <dd>
+          <span>{{ orderCategory.id }}</span>
+        </dd>
+        <dt><span>Category Name</span></dt>
+        <dd>
+          <span>{{ orderCategory.categoryName }}</span>
+        </dd>
+        <dt><span>Category Image</span></dt>
+        <dd>
+          <div *ngIf="orderCategory.categoryImage">
+            <a (click)="openFile(orderCategory.categoryImage, orderCategory.categoryImageContentType)">
+              <img
+                [src]="'data:' + orderCategory.categoryImageContentType + ';base64,' + orderCategory.categoryImage"
+                style="max-width: 100%"
+                alt="orderCategory image"
+              />
+            </a>
+            {{ orderCategory.categoryImageContentType }}, {{ byteSize(orderCategory.categoryImage) }}
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/order-category', orderCategory.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

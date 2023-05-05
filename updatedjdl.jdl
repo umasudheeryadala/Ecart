@@ -1,0 +1,17 @@
+
+entity OrderCategory {
+    categoryName String required pattern(/([A-Z][a-z]+)( [A-Z][a-z]+)*/)
+    categoryImage ImageBlob
+}
+
+
+relationship OneToMany {
+    OrderCategory{orderItem} to OrderItem
+}
+
+entity OrderItem {
+	id Long
+    productName String required pattern(/([A-Z][a-z]+)( [A-Z][a-z]+)*/)
+    quantity Long required
+    price Long required
+}

@@ -5,7 +5,6 @@ import { OrderItemDetailComponent } from './detail/order-item-detail.component';
 import { OrderItemUpdateComponent } from './update/order-item-update.component';
 import { OrderItemDeleteDialogComponent } from './delete/order-item-delete-dialog.component';
 import { OrderItemRoutingModule } from './route/order-item-routing.module';
-import { AdditemComponent } from '../cart-item/additem/additem.component';
 import { CartItemModule } from '../cart-item/cart-item.module';
 
 @NgModule({

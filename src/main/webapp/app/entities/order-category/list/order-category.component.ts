@@ -3,40 +3,50 @@ import { ActivatedRoute, Data, ParamMap, Router } from '@angular/router';
 import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { IOrderItem } from '../order-item.model';
+import { IOrderCategory } from '../order-category.model';
 import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
-import { EntityArrayResponseType, OrderItemService } from '../service/order-item.service';
-import { OrderItemDeleteDialogComponent } from '../delete/order-item-delete-dialog.component';
+import { EntityArrayResponseType, OrderCategoryService } from '../service/order-category.service';
+import { OrderCategoryDeleteDialogComponent } from '../delete/order-category-delete-dialog.component';
+import { DataUtils } from 'app/core/util/data-util.service';
 import { SortService } from 'app/shared/sort/sort.service';
 
 @Component({
-  selector: 'jhi-order-item',
-  templateUrl: './order-item.component.html',
+  selector: 'jhi-order-category',
+  templateUrl: './order-category.component.html',
 })
-export class OrderItemComponent implements OnInit {
-  orderItems?: IOrderItem[];
+export class OrderCategoryComponent implements OnInit {
+  orderCategories?: IOrderCategory[];
   isLoading = false;
 
   predicate = 'id';
   ascending = true;
 
   constructor(
-    protected orderItemService: OrderItemService,
+    protected orderCategoryService: OrderCategoryService,
     protected activatedRoute: ActivatedRoute,
     public router: Router,
     protected sortService: SortService,
+    protected dataUtils: DataUtils,
     protected modalService: NgbModal
   ) {}
 
-  trackId = (_index: number, item: IOrderItem): number => this.orderItemService.getOrderItemIdentifier(item);
+  trackId = (_index: number, item: IOrderCategory): number => this.orderCategoryService.getOrderCategoryIdentifier(item);
 
   ngOnInit(): void {
     this.load();
   }
 
-  delete(orderItem: IOrderItem): void {
-    const modalRef = this.modalService.open(OrderItemDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.orderItem = orderItem;
+  byteSize(base64String: string): string {
+    return this.dataUtils.byteSize(base64String);
+  }
+
+  openFile(base64String: string, contentType: string | null | undefined): void {
+    return this.dataUtils.openFile(base64String, contentType);
+  }
+
+  delete(orderCategory: IOrderCategory): void {
+    const modalRef = this.modalService.open(OrderCategoryDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.orderCategory = orderCategory;
     // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
@@ -77,14 +87,14 @@ export class OrderItemComponent implements OnInit {
 
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.orderItems = this.refineData(dataFromBody);
+    this.orderCategories = this.refineData(dataFromBody);
   }
 
-  protected refineData(data: IOrderItem[]): IOrderItem[] {
+  protected refineData(data: IOrderCategory[]): IOrderCategory[] {
     return data.sort(this.sortService.startSort(this.predicate, this.ascending ? 1 : -1));
   }
 
-  protected fillComponentAttributesFromResponseBody(data: IOrderItem[] | null): IOrderItem[] {
+  protected fillComponentAttributesFromResponseBody(data: IOrderCategory[] | null): IOrderCategory[] {
     return data ?? [];
   }
 
@@ -93,7 +103,7 @@ export class OrderItemComponent implements OnInit {
     const queryObject = {
       sort: this.getSortQueryParam(predicate, ascending),
     };
-    return this.orderItemService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
+    return this.orderCategoryService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 
   protected handleNavigation(predicate?: string, ascending?: boolean): void {
